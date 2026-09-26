@@ -33,3 +33,32 @@ body { margin: 0; background: #f6f8fb; color: #1f2937; }
 .link { border: none; background: none; color: var(--brand); cursor: pointer; padding: 0; }
 .page-foot { display: flex; justify-content: space-between; margin-top: 8px; font-size: 12px; color: var(--muted); }
 .error-text { color: #b42318; }
+
+/* 校准到期看板 */
+.board { background: #fff; border: 1px solid var(--border); border-radius: 8px; padding: 12px 14px; margin-bottom: 14px; }
+.board-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; flex-wrap: wrap; }
+.board-head h3 { margin: 0; font-size: 15px; }
+.board-desc { color: var(--muted); font-size: 12px; margin: 4px 0 0; }
+.board-controls { display: flex; align-items: flex-end; gap: 14px; flex-wrap: wrap; }
+.board-control span { display: block; font-size: 12px; color: var(--muted); margin-bottom: 2px; }
+.board-control select, .filter-item select { border: 1px solid var(--border); border-radius: 6px; padding: 5px 8px; background: #fff; font-size: 13px; }
+.range-tabs { display: flex; border: 1px solid var(--border); border-radius: 6px; overflow: hidden; }
+.range-tab { border: none; background: #fff; padding: 6px 12px; cursor: pointer; font-size: 13px; color: var(--muted); }
+.range-tab + .range-tab { border-left: 1px solid var(--border); }
+.range-tab.active { background: var(--brand); color: #fff; }
+.board-empty { margin: 12px 0; padding: 18px; text-align: center; color: var(--muted); background: #f8fafc; border: 1px dashed var(--border); border-radius: 8px; font-size: 13px; }
+.board-table { margin-top: 12px; }
+.board-panels { display: flex; gap: 12px; margin-top: 12px; flex-wrap: wrap; }
+.board-panel { flex: 1; min-width: 280px; }
+.board-panel h4 { margin: 0 0 8px; font-size: 13px; color: var(--muted); }
+.trend-chart { display: flex; align-items: flex-end; gap: 10px; min-height: 140px; padding: 8px 4px 0; border-bottom: 1px solid var(--border); }
+.trend-item { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 6px; min-width: 0; }
+.trend-bars { display: flex; align-items: flex-end; gap: 3px; height: 110px; }
+.trend-bar { width: 12px; border-radius: 3px 3px 0 0; min-height: 2px; }
+.trend-bar.passed { background: #12b76a; }
+.trend-bar.failed { background: #f04438; }
+.trend-label { font-size: 11px; color: var(--muted); white-space: nowrap; }
+.trend-legend { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--muted); margin: 8px 0 0; }
+.legend-dot { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-left: 10px; }
+.legend-dot.passed { background: #12b76a; margin-left: 0; }
+.legend-dot.failed { background: #f04438; }

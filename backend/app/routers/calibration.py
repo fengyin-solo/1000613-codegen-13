@@ -30,6 +30,17 @@ def list_entries(
     return PageResult(items=items, total=total, page=page, size=size)
 
 
+@router.get("/board")
+def calibration_board(
+    keyword: str | None = Query(default=None, description="与列表一致的校准编号检索"),
+    status: str | None = Query(default=None, description="与列表一致的状态筛选"),
+    due_days: int = Query(default=30, description="临近到期区间：7、15、30 天"),
+    range_key: str = Query(default="30d", alias="range", description="趋势时间段：7d、30d、90d"),
+) -> dict[str, Any]:
+    """校准到期看板：待校准数量与列表筛选口径一致，已停用设备不进入待校准。"""
+    return service.board(keyword=keyword, status=status, due_days=due_days, range_key=range_key)
+
+
 @router.get("/{entry_id}", response_model=dict)
 def get_entry(entry_id: int) -> dict:
     """读取单条校准记录明细；不存在时给出可读的错误说明。"""
