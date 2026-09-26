@@ -6,7 +6,7 @@ from typing import Any
 from fastapi import APIRouter, HTTPException, Query
 
 from app.schemas import ActionResult, EntryPayload, PageResult
-from app.services.calibration import CalibrationService
+from app.services.calibration import RANGE_OPTIONS, WINDOW_OPTIONS, CalibrationService
 
 router = APIRouter(prefix="/api/calibration", tags=["校准记录"])
 
@@ -20,14 +20,40 @@ STATUSES = ["待校准", "校准中", "已合格", "不合格"]
 def list_entries(
     keyword: str | None = Query(default=None, description="按校准编号检索"),
     status: str | None = Query(default=None, description="待校准、校准中、已合格、不合格"),
+    device: str | None = Query(default=None, description="按关联设备检索"),
+    method: str | None = Query(default=None, description="按校准方式检索"),
     page: int = 1,
     size: int = 20,
 ) -> PageResult[dict]:
-    """按校准编号与状态过滤校准记录列表；没有数据时返回空页，不报错。"""
+    """按校准编号、设备、方式与状态过滤校准记录列表；待校准口径与到期看板一致。"""
     if size > 200:
         raise HTTPException(status_code=400, detail="每页最多 200 条，请缩小分页范围")
-    items, total = service.list_entries(keyword=keyword, status=status, page=page, size=size)
+    items, total = service.list_entries(
+        keyword=keyword, status=status, device=device, method=method, page=page, size=size
+    )
     return PageResult(items=items, total=total, page=page, size=size)
+
+
+@router.get("/dashboard")
+def dashboard(
+    window: int = Query(default=30, description="临近到期区间天数：7、30、90"),
+    range_days: int = Query(default=90, alias="range", description="趋势时间段天数：30、90、180"),
+    device: str | None = Query(default=None, description="按设备编号或名称过滤看板设备行"),
+    method: str | None = Query(default=None, description="按校准方式过滤看板设备行"),
+) -> dict[str, Any]:
+    """校准到期看板：按设备与校准周期分桶待校准、临近到期、已过期，并给出合格率与趋势。"""
+    if window not in WINDOW_OPTIONS:
+        raise HTTPException(status_code=400, detail="到期区间只支持 7、30、90 天")
+    if range_days not in RANGE_OPTIONS:
+        raise HTTPException(status_code=400, detail="趋势时间段只支持 30、90、180 天")
+    return service.dashboard(window_days=window, range_days=range_days, device=device, method=method)
+
+
+@router.get("/export")
+def export_entries() -> dict[str, Any]:
+    """导出校准记录清单：返回当前过滤条件下的全量数据。"""
+    items, total = service.list_entries(page=1, size=10000)
+    return {"module": "calibration", "total": total, "items": items}
 
 
 @router.get("/{entry_id}", response_model=dict)
@@ -56,10 +82,3 @@ def run_action(entry_id: int, payload: EntryPayload) -> ActionResult:
     if entry is None:
         return ActionResult(ok=False, message=message)
     return ActionResult(ok=True, message=message, entry=entry)
-
-
-@router.get("/export")
-def export_entries() -> dict[str, Any]:
-    """导出校准记录清单：返回当前过滤条件下的全量数据。"""
-    items, total = service.list_entries(page=1, size=10000)
-    return {"module": "calibration", "total": total, "items": items}

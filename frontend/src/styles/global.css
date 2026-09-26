@@ -33,3 +33,39 @@ body { margin: 0; background: #f6f8fb; color: #1f2937; }
 .link { border: none; background: none; color: var(--brand); cursor: pointer; padding: 0; }
 .page-foot { display: flex; justify-content: space-between; margin-top: 8px; font-size: 12px; color: var(--muted); }
 .error-text { color: #b42318; }
+
+/* 校准到期看板 */
+.panel { background: #fff; border: 1px solid var(--border); border-radius: 8px; padding: 12px; margin-bottom: 12px; }
+.panel-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+.panel-title { font-size: 14px; margin: 0; }
+.panel-note { font-size: 12px; color: var(--muted); }
+.panel-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.empty-panel { background: #fff; border: 1px dashed var(--border); border-radius: 8px; padding: 32px; text-align: center; color: var(--muted); }
+.filter-hint { font-size: 12px; color: var(--muted); align-self: center; }
+.stat-link { display: block; font-size: 12px; color: var(--brand); text-decoration: none; margin-top: 2px; }
+.stat-value.warn { color: #b45309; }
+.stat-value.bad { color: #b42318; }
+select { padding: 5px 6px; border: 1px solid var(--border); border-radius: 6px; background: #fff; }
+.chip { display: inline-block; border: 1px solid var(--border); border-radius: 12px; padding: 2px 8px; margin: 2px; font-size: 12px; background: #f8fafc; }
+.chip em { font-style: normal; color: var(--muted); }
+.chip.pending { border-color: #b45309; color: #b45309; background: #fffbeb; }
+.chip.due { border-color: #1d4ed8; color: #1d4ed8; background: #eff6ff; }
+.chip.overdue { border-color: #b42318; color: #b42318; background: #fef3f2; }
+.rate-bar { height: 6px; background: #eef2f7; border-radius: 3px; overflow: hidden; margin-bottom: 2px; }
+.rate-bar > span { display: block; height: 100%; background: var(--brand); }
+.segment { display: inline-flex; border: 1px solid var(--border); border-radius: 6px; overflow: hidden; }
+.segment button { border: none; background: #fff; padding: 6px 12px; cursor: pointer; font-size: 12px; }
+.segment button.active { background: var(--brand); color: #fff; }
+.legend { display: flex; gap: 12px; font-size: 12px; color: var(--muted); margin-bottom: 4px; }
+.legend i { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 4px; }
+.legend-passed { background: #16a34a; }
+.legend-failed { background: #dc2626; }
+.legend-rate { background: var(--brand); }
+.trend-svg { width: 100%; height: auto; display: block; }
+.trend-svg .grid { stroke: #eef2f7; }
+.trend-svg .axis { stroke: var(--border); }
+.trend-svg .axis-label { font-size: 10px; fill: var(--muted); }
+.trend-svg .bar-passed { fill: #16a34a; }
+.trend-svg .bar-failed { fill: #dc2626; }
+.trend-svg .rate-line { stroke: var(--brand); stroke-width: 2; }
+.trend-svg .rate-dot { fill: var(--brand); }

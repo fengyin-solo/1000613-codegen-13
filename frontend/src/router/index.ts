@@ -10,6 +10,7 @@ const Result = () => import('@/views/result/index.vue')
 const Review = () => import('@/views/review/index.vue')
 const Instrument = () => import('@/views/instrument/index.vue')
 const Calibration = () => import('@/views/calibration/index.vue')
+const CalibrationDashboard = () => import('@/views/calibration/Dashboard.vue')
 const Reagent = () => import('@/views/reagent/index.vue')
 const Consume = () => import('@/views/consume/index.vue')
 const Environment = () => import('@/views/environment/index.vue')
@@ -33,6 +34,7 @@ const router = createRouter({
     { path: '/review', name: 'review', component: Review },
     { path: '/instrument', name: 'instrument', component: Instrument },
     { path: '/calibration', name: 'calibration', component: Calibration },
+    { path: '/calibration/dashboard', name: 'calibration-dashboard', component: CalibrationDashboard },
     { path: '/reagent', name: 'reagent', component: Reagent },
     { path: '/consume', name: 'consume', component: Consume },
     { path: '/environment', name: 'environment', component: Environment },

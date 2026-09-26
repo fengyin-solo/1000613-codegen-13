@@ -6,6 +6,7 @@
         <p class="page-desc">维护校准记录，围绕校准编号、关联设备、校准方式、标准物质做登记、筛选与状态流转。</p>
       </div>
       <div class="page-actions">
+        <RouterLink class="btn" to="/calibration/dashboard">校准到期看板</RouterLink>
         <button class="btn primary" type="button" @click="openCreate">登记校准记录</button>
         <button class="btn" type="button" @click="exportRows">导出校准记录清单</button>
       </div>
@@ -22,6 +23,13 @@
       <label v-for="field in filterFields" :key="field" class="filter-item">
         <span>{{ field }}</span>
         <input v-model="filters[field]" :placeholder="`按${field}检索`" />
+      </label>
+      <label class="filter-item">
+        <span>校准状态</span>
+        <select v-model="statusFilter">
+          <option value="">全部状态</option>
+          <option v-for="status in statuses" :key="status" :value="status">{{ status }}</option>
+        </select>
       </label>
       <button class="btn" type="submit">查询</button>
       <button class="btn ghost" type="button" @click="resetFilters">重置条件</button>
@@ -57,6 +65,9 @@
 
     <footer class="page-foot">
       <span>共 {{ total }} 条校准记录记录</span>
+      <span v-if="statusFilter === '待校准'" class="filter-hint">
+        待校准口径与校准到期看板一致：已停用设备不计入
+      </span>
       <span v-if="errorMessage" class="error-text">{{ errorMessage }}</span>
     </footer>
   </section>
@@ -64,6 +75,7 @@
 
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
+import { useRoute } from 'vue-router'
 
 import { request } from '@/api/client'
 
@@ -75,14 +87,17 @@ const actions = ["开始校准", "判定合格", "判定不合格"]
 const statuses = ["待校准", "校准中", "已合格", "不合格"]
 const stats = [{"label": "待校准记录", "value": 0}, {"label": "校准合格率", "value": 0}, {"label": "不合格设备", "value": 0}]
 
+const route = useRoute()
 const rows = ref<Row[]>([])
 const total = ref(0)
 const errorMessage = ref('')
 const filters = ref<Record<string, string>>({})
+const statusFilter = ref('')
 const filterFields = columns.slice(0, 3)
 
 function resetFilters() {
   filters.value = {}
+  statusFilter.value = ''
   void reload()
 }
 
@@ -110,11 +125,22 @@ async function runAction(action: string, row: Row) {
   }
 }
 
+function buildQuery() {
+  const params = new URLSearchParams()
+  const keyword = (filters.value['校准编号'] ?? '').trim()
+  const device = (filters.value['关联设备'] ?? '').trim()
+  const method = (filters.value['校准方式'] ?? '').trim()
+  if (keyword) params.set('keyword', keyword)
+  if (device) params.set('device', device)
+  if (method) params.set('method', method)
+  if (statusFilter.value) params.set('status', statusFilter.value)
+  return params.toString()
+}
+
 async function reload() {
   errorMessage.value = ''
-  const query = new URLSearchParams(filters.value as Record<string, string>).toString()
   try {
-    const response = await request(`${ENDPOINT}?${query}`)
+    const response = await request(`${ENDPOINT}?${buildQuery()}`)
     if (!response.ok) {
       throw new Error('校准记录列表读取失败')
     }
@@ -126,5 +152,11 @@ async function reload() {
   }
 }
 
-onMounted(reload)
+onMounted(() => {
+  const initial = route.query.status
+  if (typeof initial === 'string' && statuses.includes(initial)) {
+    statusFilter.value = initial
+  }
+  void reload()
+})
 </script>
